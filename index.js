@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 const util = require('util');
 
+const debug = require('debug')('seedmongo-cms:index');
+
 // config should be imported before importing any other file
 const config = require('./config/config');
 const app = require('./config/express');
-
-const debug = require('debug')('seedmongo-cms:index');
 
 // make bluebird default Promise
 Promise = require('bluebird'); // eslint-disable-line no-global-assign
@@ -15,7 +15,7 @@ mongoose.Promise = Promise;
 
 // connect to mongo db
 const mongoUri = config.mongo.host;
-mongoose.connect(mongoUri, { server: { socketOptions: { keepAlive: 1 } } });
+mongoose.connect(mongoUri, { keepAlive: 1 });
 mongoose.connection.on('error', () => {
   throw new Error(`unable to connect to database: ${mongoUri}`);
 });
