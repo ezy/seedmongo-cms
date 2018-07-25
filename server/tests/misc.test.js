@@ -1,7 +1,7 @@
 const request = require('supertest-as-promised');
 const httpStatus = require('http-status');
 const chai = require('chai'); // eslint-disable-line import/newline-after-import
-const expect = chai.expect;
+const { expect } = chai;
 const app = require('../../index');
 
 chai.config.includeStack = true;
@@ -45,15 +45,15 @@ describe('## Misc', () => {
         .catch(done);
     });
 
-    it('should handle express validation error - username is required', (done) => {
+    it('should handle express validation error - userEmail is required', (done) => {
       request(app)
         .post('/api/users')
         .send({
-          mobileNumber: '1234567890'
+          userName: '1234567890'
         })
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
-          expect(res.body.message).to.equal('"username" is required');
+          expect(res.body.message).to.equal('"userEmail" is required');
           done();
         })
         .catch(done);

@@ -2,7 +2,7 @@ const request = require('supertest-as-promised');
 const httpStatus = require('http-status');
 const jwt = require('jsonwebtoken');
 const chai = require('chai'); // eslint-disable-line import/newline-after-import
-const expect = chai.expect;
+const { expect } = chai;
 const app = require('../../index');
 const config = require('../../config/config');
 
@@ -10,13 +10,13 @@ chai.config.includeStack = true;
 
 describe('## Auth APIs', () => {
   const validUserCredentials = {
-    username: 'react',
-    password: 'express'
+    userEmail: 'user@email.com',
+    password: 'seedmong'
   };
 
   const invalidUserCredentials = {
-    username: 'react',
-    password: 'IDontKnow'
+    userEmail: 'not-a-user@email.com',
+    password: 'wrong'
   };
 
   let jwtToken;
@@ -43,7 +43,7 @@ describe('## Auth APIs', () => {
           expect(res.body).to.have.property('token');
           jwt.verify(res.body.token, config.jwtSecret, (err, decoded) => {
             expect(err).to.not.be.ok; // eslint-disable-line no-unused-expressions
-            expect(decoded.username).to.equal(validUserCredentials.username);
+            expect(decoded.userEmail).to.equal(validUserCredentials.userEmail);
             jwtToken = `Bearer ${res.body.token}`;
             done();
           });

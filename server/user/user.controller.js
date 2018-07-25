@@ -22,14 +22,14 @@ function get(req, res) {
 
 /**
  * Create new user
- * @property {string} req.body.username - The username of user.
- * @property {string} req.body.mobileNumber - The mobileNumber of user.
+ * @property {string} req.body.userEmail - The userEmail of user.
+ * @property {string} req.body.userName - The userName of user.
  * @returns {User}
  */
 function create(req, res, next) {
   const user = new User({
-    username: req.body.username,
-    mobileNumber: req.body.mobileNumber
+    userEmail: req.body.userEmail,
+    userName: req.body.userName
   });
 
   user.save()
@@ -39,14 +39,14 @@ function create(req, res, next) {
 
 /**
  * Update existing user
- * @property {string} req.body.username - The username of user.
- * @property {string} req.body.mobileNumber - The mobileNumber of user.
+ * @property {string} req.body.userEmail - The userEmail of user.
+ * @property {string} req.body.userName - The userName of user.
  * @returns {User}
  */
 function update(req, res, next) {
-  const user = req.user;
-  user.username = req.body.username;
-  user.mobileNumber = req.body.mobileNumber;
+  const { user } = req;
+  user.userEmail = req.body.userEmail;
+  user.userName = req.body.userName;
 
   user.save()
     .then(savedUser => res.json(savedUser))
@@ -71,10 +71,17 @@ function list(req, res, next) {
  * @returns {User}
  */
 function remove(req, res, next) {
-  const user = req.user;
+  const { user } = req;
   user.remove()
     .then(deletedUser => res.json(deletedUser))
     .catch(e => next(e));
 }
 
-module.exports = { load, get, create, update, list, remove };
+module.exports = {
+  load,
+  get,
+  create,
+  update,
+  list,
+  remove
+};

@@ -45,7 +45,7 @@ if (config.env !== 'test') {
       })
     ],
     meta: true,
-    expressFormat: true,
+    msg: 'HTTP {{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}',
     colorize: false,
     ignoreRoute(req, res) { return false; } // eslint-disable-line no-unused-vars
   }));
