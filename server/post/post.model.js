@@ -1,19 +1,41 @@
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
+const slug = require('mongoose-slug-generator');
 const APIError = require('../helpers/APIError');
 
+mongoose.plugin(slug);
+
 /**
- * User Schema
+ * Post Schema
  */
-const UserSchema = new mongoose.Schema({
-  userEmail: {
+const PostSchema = new mongoose.Schema({
+  postTitle: {
     type: String,
     required: true
   },
-  userName: {
-    type: String
-  }
+  postSlug: {
+    type: String,
+    slug: 'postTitle',
+    unique: true
+  },
+  postType: {
+    type: String,
+    default: 'post',
+    required: true
+  },
+  postDate: {
+    type: Date,
+    default: Date.now,
+    required: true
+  },
+  postContent: String,
+  postAuthor: String,
+  postImage: String,
+  postMedia: String,
+  postStatus: String,
+  postExpiry: Date,
+  postFrequency: String
 }, {
   timestamps: true
 });
@@ -28,17 +50,17 @@ const UserSchema = new mongoose.Schema({
 /**
  * Methods
  */
-UserSchema.method({
+PostSchema.method({
 });
 
 /**
  * Statics
  */
-UserSchema.statics = {
+PostSchema.statics = {
   /**
    * Get user
    * @param {ObjectId} id - The objectId of user.
-   * @returns {Promise<User, APIError>}
+   * @returns {Promise<Post, APIError>}
    */
   get(id) {
     return this.findById(id)
@@ -47,7 +69,7 @@ UserSchema.statics = {
         if (user) {
           return user;
         }
-        const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
+        const err = new APIError('No such post exists', httpStatus.NOT_FOUND);
         return Promise.reject(err);
       });
   },
@@ -56,7 +78,7 @@ UserSchema.statics = {
    * List users in descending order of 'createdAt' timestamp.
    * @param {number} skip - Number of users to be skipped.
    * @param {number} limit - Limit number of users to be returned.
-   * @returns {Promise<User[]>}
+   * @returns {Promise<Post[]>}
    */
   list({ skip = 0, limit = 50 } = {}) {
     return this.find()
@@ -68,6 +90,6 @@ UserSchema.statics = {
 };
 
 /**
- * @typedef User
+ * @typedef Post
  */
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('Post', PostSchema);
