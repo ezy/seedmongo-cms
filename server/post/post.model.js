@@ -1,10 +1,7 @@
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
-const slug = require('mongoose-slug-generator');
 const APIError = require('../helpers/APIError');
-
-mongoose.plugin(slug);
 
 /**
  * Post Schema
@@ -16,7 +13,7 @@ const PostSchema = new mongoose.Schema({
   },
   postSlug: {
     type: String,
-    slug: 'postTitle',
+    required: true,
     unique: true
   },
   postType: {

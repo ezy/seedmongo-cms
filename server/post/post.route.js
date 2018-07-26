@@ -8,21 +8,17 @@ const config = require('../../config/config');
 const router = express.Router(); // eslint-disable-line new-cap
 
 router.route('/')
-  /** GET /api/posts - Get list of posts */
-  .get(postCtrl.list)
-
-  /** POST /api/posts - Create new post */
+  .get(postCtrl.getAll)
   .post(expressJwt({ secret: config.jwtSecret }), postCtrl.create);
 
 router.route('/:postSlug')
-  /** GET /api/posts/:postSlug - Get post */
   .get(postCtrl.get)
-
-  // /** PUT /api/posts/:postId - Update post */
-  // .put(validate(paramValidation.updatePost), postCtrl.update)
-  //
-  // /** DELETE /api/posts/:postId - Delete post */
-  // .delete(postCtrl.remove);
+  .put(
+    validate(paramValidation.updatePost),
+    expressJwt({ secret: config.jwtSecret }),
+    postCtrl.update
+  )
+  .delete(expressJwt({ secret: config.jwtSecret }), postCtrl.remove);
 
 /** Load post when API with postSlug route parameter is hit */
 router.param('postSlug', postCtrl.load);

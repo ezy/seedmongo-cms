@@ -18,6 +18,13 @@ module.exports = {
     }
   },
 
+  // UPDATE /api/users/:userId
+  updatePost: {
+    params: {
+      postSlug: Joi.string().required()
+    }
+  },
+
   // POST /api/auth/login
   login: {
     body: {
