@@ -2,6 +2,8 @@ version: '2'
 
 services:
   seedmongo-cms:
+    restart:
+      - always
     build:
       context: .
     volumes:
@@ -33,6 +35,6 @@ services:
     links:
       - mongo
   mongo:
-    image: "mongo:3.4"
+    image: mongo
     ports:
       - "27017:27017"
