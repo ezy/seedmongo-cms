@@ -20,7 +20,4 @@ router.route('/:postSlug')
   )
   .delete(expressJwt({ secret: config.jwtSecret }), postCtrl.remove);
 
-/** Load post when API with postSlug route parameter is hit */
-router.param('postSlug', postCtrl.load);
-
 module.exports = router;

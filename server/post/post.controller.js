@@ -2,24 +2,10 @@ const changeCase = require('change-case');
 const Post = require('./post.model');
 
 /**
- * Load post and append to req.
- */
-function load(req, res, next, slug) {
-  Post.find({
-    postSlug: slug
-  })
-    .then((post) => {
-      req.post = post;
-      return next();
-    })
-    .catch(e => next(e));
-}
-
-/**
  * Create new post
  */
 function create(req, res, next) {
-  const post = new Post({
+  const newPost = new Post({
     postTitle: req.body.postTitle,
     postSlug: changeCase.paramCase(`${req.body.postTitle}-${Date.now()}`),
     postType: req.body.postType,
@@ -33,16 +19,25 @@ function create(req, res, next) {
     postFrequency: req.body.postFrequency
   });
 
-  post.save()
-    .then(savedPost => res.json(savedPost))
-    .catch(e => next(e));
+  newPost.save((err, post) => {
+    if (err) {
+      next(err);
+    }
+    return res.json({ post });
+  });
 }
 
 /**
  * Get post
  */
-function get(req, res) {
-  return res.json({ post: req.post });
+function get(req, res, next) {
+  Post.findOne({ postSlug: req.params.postSlug })
+    .exec((err, post) => {
+      if (err) {
+        return next(err);
+      }
+      return res.json({ post });
+    });
 }
 
 /**
@@ -51,30 +46,24 @@ function get(req, res) {
 function getAll(req, res, next) {
   Post.find()
     .limit(50)
-    .then(posts => res.json({ posts }))
-    .catch(e => next(e));
+    .exec((err, posts) => {
+      if (err) {
+        next(err);
+      }
+      return res.json({ posts });
+    });
 }
 
 /**
  * Update existing post
  */
 function update(req, res, next) {
-  const post = req.post[0];
+  const post = req.body;
   const { postSlug } = req.params;
 
-  post.postTitle = req.body.postTitle;
-  post.postType = req.body.postType;
-  post.postDate = req.body.postDate;
-  post.postContent = req.body.postContent;
-  post.postAuthor = req.body.postAuthor;
-  post.postImage = req.body.postImage;
-  post.postMedia = req.body.postMedia;
-  post.postStatus = req.body.postStatus;
-  post.postExpiry = req.body.postExpiry;
-  post.postFrequency = req.body.postFrequency;
-
   const slug = changeCase.paramCase(post.postTitle);
-  if (!post.postSlug.includes(slug)) {
+  const slugString = new RegExp(slug, 'g');
+  if (!postSlug.match(slugString)) {
     post.postSlug = `${slug}-${Date.now()}`;
   }
 
@@ -82,9 +71,21 @@ function update(req, res, next) {
     if (err) {
       next(err);
     }
-    const output = resp;
-    output.postSlug = post.postSlug;
-    return res.json(output);
+    if (resp.n === 0) {
+      return res.status(404).send({ error: 'No post found.' });
+    }
+    if (resp.nModified !== 0) {
+      return res.status(200).send({
+        success: 'Post successfully updated.',
+        postSlug: post.postSlug
+      });
+    }
+    if (resp.nModified === 0) {
+      return res.status(200).send({
+        success: 'Post found, but no new data was sent.'
+      });
+    }
+    return res.json(resp);
   }));
 }
 
@@ -103,7 +104,6 @@ function remove(req, res, next) {
 }
 
 module.exports = {
-  load,
   get,
   create,
   update,

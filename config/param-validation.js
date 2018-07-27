@@ -18,7 +18,7 @@ module.exports = {
     }
   },
 
-  // UPDATE /api/users/:userId
+  // UPDATE /api/posts/:postSlug
   updatePost: {
     params: {
       postSlug: Joi.string().required()
