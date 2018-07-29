@@ -21,7 +21,7 @@ function create(req, res, next) {
 
   newPost.save((err, post) => {
     if (err) {
-      next(err);
+      return next(err);
     }
     return res.json({ post });
   });
@@ -61,8 +61,11 @@ function update(req, res, next) {
   const post = req.body;
   const { postSlug } = req.params;
 
+  // create a slug from the title to regex
   const slug = changeCase.paramCase(post.postTitle);
+  // create a regex from the slug
   const slugString = new RegExp(slug, 'g');
+  // compare the passed in title-slug to the existing postSlug
   if (!postSlug.match(slugString)) {
     post.postSlug = `${slug}-${Date.now()}`;
   }
@@ -72,7 +75,7 @@ function update(req, res, next) {
       next(err);
     }
     if (resp.n === 0) {
-      return res.status(404).send({ error: 'No post found.' });
+      return res.status(200).send({ error: 'No post found.' });
     }
     if (resp.nModified !== 0) {
       return res.status(200).send({
@@ -98,6 +101,12 @@ function remove(req, res, next) {
   Post.deleteOne({ postSlug }, ((err, resp) => {
     if (err) {
       next(err);
+    }
+    if (resp.n === 0) {
+      return res.status(200).send({ error: 'No post found.' });
+    }
+    if (resp.nModified !== 0) {
+      return res.status(200).send({ success: 'Post successfully deleted.' });
     }
     return res.json(resp);
   }));
