@@ -145,7 +145,6 @@ describe('[POST] /api/posts Testing', () => {
       .expect('Content-Type', /json/)
       .expect(httpStatus.OK)
       .end((err, res) => {
-        console.log('************************',res.body);
         resPostSlug = res.body.postSlug;
         expect(res.body).to.be.an('object');
         expect(res.body).to.have.deep.property('success', 'Post successfully updated.');
