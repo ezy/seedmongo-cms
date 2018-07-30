@@ -34,10 +34,10 @@ const config = {
   env: envVars.NODE_ENV,
   port: envVars.PORT || 4040,
   mongooseDebug: envVars.MONGOOSE_DEBUG,
-  jwtSecret: envVars.JWT_SECRET || 'no-secret',
+  jwtSecret: envVars.JWT_SECRET,
   mongo: {
-    host: envVars.MONGO_HOST || 'mongodb://localhost/seedmongo-cms-development',
-    port: envVars.MONGO_PORT || 27017
+    host: envVars.MONGO_HOST,
+    port: envVars.MONGO_PORT
   }
 };
 
