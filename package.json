@@ -19,7 +19,6 @@
     "test": "cross-env NODE_ENV=test ./node_modules/.bin/mocha --ui bdd --reporter spec --colors server --recursive",
     "test:watch": "yarn test -- --watch",
     "test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _mocha -- --ui bdd --reporter spec --colors server --recursive",
-    "test:check-coverage": "yarn test:coverage && istanbul check-coverage",
     "report-coverage": "./node_modules/.bin/codecov"
   },
   "dependencies": {
