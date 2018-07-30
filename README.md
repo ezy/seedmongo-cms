@@ -1,7 +1,7 @@
 # SeedMongo CMS - Express & mongoose REST API CMS
 
-[![Build Status](https://travis-ci.com/ezy/seedpress-cms.svg?branch=master)](https://travis-ci.com/ezy/seedpress-cms)
-[![codecov.io](http://codecov.io/github/ezy/seedpress-cms/coverage.svg?branch=master)](http://codecov.io/github/ezy/seedpress-cms?branch=master)
+[![Build Status](https://travis-ci.com/ezy/seedmongo-cms.svg?branch=master)](https://travis-ci.com/ezy/seedmongo-cms)
+[![codecov.io](http://codecov.io/github/ezy/seedmongo-cms/coverage.svg?branch=master)](http://codecov.io/github/ezy/seedmongo-cms?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Twitter Follow](https://img.shields.io/twitter/follow/__ezy__.svg?style=social&label=Follow)](https://twitter.com/__ezy__)
 
