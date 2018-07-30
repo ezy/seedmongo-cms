@@ -32,12 +32,12 @@ if (error) {
 
 const config = {
   env: envVars.NODE_ENV,
-  port: envVars.PORT,
+  port: envVars.PORT || 4040,
   mongooseDebug: envVars.MONGOOSE_DEBUG,
-  jwtSecret: envVars.JWT_SECRET,
+  jwtSecret: envVars.JWT_SECRET || 'no-secret',
   mongo: {
-    host: envVars.MONGO_HOST,
-    port: envVars.MONGO_PORT
+    host: envVars.MONGO_HOST || 'mongodb://localhost/seedmongo-cms-development',
+    port: envVars.MONGO_PORT || 27017
   }
 };
 
