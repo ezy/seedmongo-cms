@@ -83,41 +83,6 @@ describe('[POST] /api/posts Testing', () => {
       });
   });
 
-  it('should be able to get a list of all seeded posts', (done) => {
-    request(app)
-      .get('/api/posts')
-      .expect(httpStatus.OK)
-      .end((err, res) => {
-        expect(res.body.posts).to.be.an('array');
-        expect(res.body.posts[0]).to.have.all.keys(postKeys);
-        // set post id for next test
-        resPostSlug = res.body.posts[0].postSlug;
-        done();
-      });
-  });
-
-  it('should be able to get a single post', (done) => {
-    request(app)
-      .get(`/api/posts/${resPostSlug}`)
-      .expect(httpStatus.OK)
-      .end((err, res) => {
-        expect(res.body.post).to.be.an('object');
-        expect(res.body.post).to.have.all.keys(postKeys);
-        done();
-      });
-  });
-
-  it('should error with wrong post slug', (done) => {
-    request(app)
-      .get('/api/posts/no-post-here')
-      .expect(400)
-      .end((err, res) => {
-        expect(res.body).to.have.property('post');
-        expect(res.body).to.have.deep.property('post', null);
-        done();
-      });
-  });
-
   it('should be able to create a post if logged in', (done) => {
     request(app)
       .post('/api/posts')
@@ -127,6 +92,7 @@ describe('[POST] /api/posts Testing', () => {
       .expect('Content-Type', /json/)
       .expect(httpStatus.OK)
       .end((err, res) => {
+        resPostSlug = res.body.post.postSlug;
         expect(res.body.post).to.be.an('object');
         expect(res.body.post).to.have.all.keys(postKeys);
         done();
@@ -168,32 +134,37 @@ describe('[POST] /api/posts Testing', () => {
       });
   });
 
-  it('should be able to delete a post if logged in', (done) => {
+  it('should be able to get a list of all seeded posts', (done) => {
     request(app)
-      .delete(`/api/posts/${resPostSlug}`)
-      .set('Authorization', `Bearer ${resToken}`)
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
+      .get('/api/posts')
       .expect(httpStatus.OK)
       .end((err, res) => {
-        expect(res.body).to.be.an('object');
-        expect(res.body).to.have.property('success');
-        expect(res.body).to.have.deep.property('success', 'Post successfully deleted.');
+        expect(res.body.posts).to.be.an('array');
+        expect(res.body.posts[0]).to.have.all.keys(postKeys);
+        // set post id for next test
+        resPostSlug = res.body.posts[0].postSlug;
         done();
       });
   });
 
-  it('should error with wrong delete post slug', (done) => {
+  it('should be able to get a single post', (done) => {
     request(app)
-      .delete(`/api/posts/${resPostSlug}`)
-      .set('Authorization', `Bearer ${resToken}`)
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
+      .get(`/api/posts/${resPostSlug}`)
       .expect(httpStatus.OK)
       .end((err, res) => {
-        expect(res.body).to.be.an('object');
-        expect(res.body).to.have.property('error');
-        expect(res.body).to.have.deep.property('error', 'No post found.');
+        expect(res.body.post).to.be.an('object');
+        expect(res.body.post).to.have.all.keys(postKeys);
+        done();
+      });
+  });
+
+  it('should error with wrong post slug', (done) => {
+    request(app)
+      .get('/api/posts/no-post-here')
+      .expect(400)
+      .end((err, res) => {
+        expect(res.body).to.have.property('post');
+        expect(res.body).to.have.deep.property('post', null);
         done();
       });
   });
@@ -234,6 +205,36 @@ describe('[POST] /api/posts Testing', () => {
       .end((err, res) => {
         expect(res.body).to.have.property('message');
         expect(res.body).to.have.deep.property('message', 'Internal Server Error');
+        done();
+      });
+  });
+
+  it('should be able to delete a post if logged in', (done) => {
+    request(app)
+      .delete(`/api/posts/${resPostSlug}`)
+      .set('Authorization', `Bearer ${resToken}`)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(httpStatus.OK)
+      .end((err, res) => {
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('success');
+        expect(res.body).to.have.deep.property('success', 'Post successfully deleted.');
+        done();
+      });
+  });
+
+  it('should error with wrong delete post slug', (done) => {
+    request(app)
+      .delete(`/api/posts/${resPostSlug}`)
+      .set('Authorization', `Bearer ${resToken}`)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(httpStatus.OK)
+      .end((err, res) => {
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('error');
+        expect(res.body).to.have.deep.property('error', 'No post found.');
         done();
       });
   });
