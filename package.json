@@ -20,7 +20,7 @@
     "test:watch": "yarn test -- --watch",
     "test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _mocha -- --ui bdd --reporter spec --colors server --recursive",
     "test:check-coverage": "yarn test:coverage && istanbul check-coverage",
-    "report-coverage": "coveralls < ./coverage/lcov.info"
+    "report-coverage": "./node_modules/.bin/codecov"
   },
   "dependencies": {
     "bluebird": "^3.5.1",
@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "chai": "^4.1.2",
+    "codecov": "^3.0.4",
     "cross-env": "^5.2.0",
     "eslint": "^5.2.0",
     "eslint-config-airbnb-base": "^13.0.0",
