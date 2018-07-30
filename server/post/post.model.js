@@ -3,10 +3,23 @@ const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 const APIError = require('../helpers/APIError');
 
+const { Schema } = mongoose;
+
+const TagSchema = new Schema({
+  tagName: {
+    type: String,
+    required: true
+  },
+  tagType: {
+    type: String,
+    required: true
+  }
+});
+
 /**
  * Post Schema
  */
-const PostSchema = new mongoose.Schema({
+const PostSchema = new Schema({
   postTitle: {
     type: String,
     required: true
@@ -32,7 +45,9 @@ const PostSchema = new mongoose.Schema({
   postMedia: String,
   postStatus: String,
   postExpiry: Date,
-  postFrequency: String
+  postFrequency: String,
+  // hasMany
+  postTags: [TagSchema]
 }, {
   timestamps: true
 });

@@ -37,7 +37,7 @@ describe('[POST] /api/posts Testing', () => {
     'postStatus',
     'postExpiry',
     'postFrequency',
-    // 'postTerms',
+    'postTags',
     'createdAt',
     'updatedAt',
     '__v'
@@ -53,16 +53,16 @@ describe('[POST] /api/posts Testing', () => {
     postStatus: faker.random.arrayElement(['published', 'draft']),
     postExpiry: faker.date.future(),
     postFrequency: faker.random.arrayElement([null, 'day', 'week', 'fortnight', 'month']),
-    // postTerms: [{
-    //   termType: 'tag',
-    //   termName: 'fws'
-    // }, {
-    //   termType: 'tag',
-    //   termName: 'Ho'
-    // }, {
-    //   termType: 'category',
-    //   termName: 'Ho'
-    // }]
+    postTerms: [{
+      termType: 'tag',
+      termName: 'fws'
+    }, {
+      termType: 'tag',
+      termName: 'Ho'
+    }, {
+      termType: 'category',
+      termName: 'Ho'
+    }]
   };
   const validUserCredentials = {
     userEmail: 'user@email.com',
@@ -213,28 +213,28 @@ describe('[POST] /api/posts Testing', () => {
       });
   });
 
-  // it('it should reject post with no term name', (done) => {
-  //   const noTermName = postRequest;
-  //   noTermName.postTerms = [{
-  //     termType: 'tag',
-  //     termName: 'fws'
-  //   }, {
-  //     termType: 'tag'
-  //   }, {
-  //     termType: 'category',
-  //     termName: 'Ho'
-  //   }];
-  //   request(app)
-  //     .post('/api/posts')
-  //     .send(noTermName)
-  //     .set('Authorization', `Bearer ${resToken}`)
-  //     .set('Accept', 'application/json')
-  //     .expect('Content-Type', /json/)
-  //     .expect(httpStatus.NOT_FOUND)
-  //     .end((err, res) => {
-  //       expect(res.body).to.have.property('error');
-  //       expect(res.body).to.have.deep.property('error', 'All terms require a termType and termName.');
-  //       done();
-  //     });
-  // });
+  it('it should reject post with no term name', (done) => {
+    const noTermName = postRequest;
+    noTermName.postTags = [{
+      termType: 'tag',
+      termName: 'fws'
+    }, {
+      termType: 'tag'
+    }, {
+      termType: 'category',
+      termName: 'Ho'
+    }];
+    request(app)
+      .post('/api/posts')
+      .send(noTermName)
+      .set('Authorization', `Bearer ${resToken}`)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(httpStatus.NOT_FOUND)
+      .end((err, res) => {
+        expect(res.body).to.have.property('message');
+        expect(res.body).to.have.deep.property('message', 'Internal Server Error');
+        done();
+      });
+  });
 });

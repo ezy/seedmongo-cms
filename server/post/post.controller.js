@@ -10,6 +10,7 @@ function create(req, res, next) {
     postSlug: changeCase.paramCase(`${req.body.postTitle}-${Date.now()}`),
     postType: req.body.postType,
     postDate: req.body.postDate,
+    postTags: req.body.postTags,
     postContent: req.body.postContent,
     postAuthor: req.body.postAuthor,
     postImage: req.body.postImage,
