@@ -26,42 +26,42 @@ describe('[POST] /api/posts Testing', () => {
   const title = faker.lorem.sentence(5);
   const postKeys = [
     '_id',
-    'postTitle',
-    'postSlug',
-    'postType',
-    'postDate',
-    'postContent',
-    'postAuthor',
-    'postImage',
-    'postMedia',
-    'postStatus',
-    'postExpiry',
-    'postFrequency',
-    'postTags',
+    'pTitle',
+    'pSlug',
+    'pType',
+    'pDate',
+    'pText',
+    'pAuthor',
+    'pImage',
+    'pMedia',
+    'pStatus',
+    'pExpiry',
+    'pFreq',
+    'pTags',
     'createdAt',
     'updatedAt',
     '__v'
   ];
   const postRequest = {
-    postTitle: title,
-    postType: faker.random.arrayElement(['post', 'page']),
-    postDate: new Date(),
-    postContent: faker.lorem.sentences(3, 3),
-    postAuthor: faker.name.findName(),
-    postImage: faker.image.imageUrl(),
-    postMedia: faker.image.imageUrl(),
-    postStatus: faker.random.arrayElement(['published', 'draft']),
-    postExpiry: faker.date.future(),
-    postFrequency: faker.random.arrayElement([null, 'day', 'week', 'fortnight', 'month']),
-    postTerms: [{
-      termType: 'tag',
-      termName: 'fws'
+    pTitle: title,
+    pType: faker.random.arrayElement(['post', 'page']),
+    pDate: new Date(),
+    pText: faker.lorem.sentences(3, 3),
+    pAuthor: faker.name.findName(),
+    pImage: faker.image.imageUrl(),
+    pMedia: faker.image.imageUrl(),
+    pStatus: faker.random.arrayElement(['published', 'draft']),
+    pExpiry: faker.date.future(),
+    pFreq: faker.random.arrayElement([null, 'day', 'week', 'fortnight', 'month']),
+    pTags: [{
+      tType: 'tag',
+      tName: 'fws'
     }, {
-      termType: 'tag',
-      termName: 'Ho'
+      tType: 'tag',
+      tName: 'Ho'
     }, {
-      termType: 'category',
-      termName: 'Ho'
+      tType: 'category',
+      tName: 'Ho'
     }]
   };
   const validUserCredentials = {
@@ -92,7 +92,7 @@ describe('[POST] /api/posts Testing', () => {
       .expect('Content-Type', /json/)
       .expect(httpStatus.OK)
       .end((err, res) => {
-        resPostSlug = res.body.post.postSlug;
+        resPostSlug = res.body.post.pSlug;
         expect(res.body.post).to.be.an('object');
         expect(res.body.post).to.have.all.keys(postKeys);
         done();
@@ -102,7 +102,7 @@ describe('[POST] /api/posts Testing', () => {
   it('should be able to update a post if logged in', (done) => {
     const updatedPost = postRequest;
     const newTitle = faker.lorem.sentence(1);
-    updatedPost.postTitle = newTitle;
+    updatedPost.pTitle = newTitle;
     request(app)
       .put(`/api/posts/${resPostSlug}`)
       .send(updatedPost)
@@ -111,10 +111,10 @@ describe('[POST] /api/posts Testing', () => {
       .expect('Content-Type', /json/)
       .expect(httpStatus.OK)
       .end((err, res) => {
-        resPostSlug = res.body.postSlug;
-        expect(res.body).to.be.an('object');
-        expect(res.body).to.have.deep.property('success', 'Post successfully updated.');
-        expect(res.body.postSlug).to.include(changeCase.paramCase(newTitle));
+        resPostSlug = res.body.post.pSlug;
+        expect(res.body.post).to.be.an('object');
+        expect(res.body.post).to.have.all.keys(postKeys);
+        expect(res.body.post.pSlug).to.include(changeCase.paramCase(newTitle));
         done();
       });
   });
@@ -142,7 +142,7 @@ describe('[POST] /api/posts Testing', () => {
         expect(res.body.posts).to.be.an('array');
         expect(res.body.posts[0]).to.have.all.keys(postKeys);
         // set post id for next test
-        resPostSlug = res.body.posts[0].postSlug;
+        resPostSlug = res.body.posts[0].pSlug;
         done();
       });
   });
@@ -186,14 +186,14 @@ describe('[POST] /api/posts Testing', () => {
 
   it('it should reject post with no term name', (done) => {
     const noTermName = postRequest;
-    noTermName.postTags = [{
-      termType: 'tag',
-      termName: 'fws'
+    noTermName.pTags = [{
+      tType: 'tag',
+      tName: 'fws'
     }, {
-      termType: 'tag'
+      tType: 'tag'
     }, {
-      termType: 'category',
-      termName: 'Ho'
+      tType: 'category',
+      tName: 'Ho'
     }];
     request(app)
       .post('/api/posts')

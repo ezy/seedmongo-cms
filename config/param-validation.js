@@ -18,10 +18,10 @@ module.exports = {
     }
   },
 
-  // UPDATE /api/posts/:postSlug
+  // UPDATE /api/posts/:pSlug
   updatePost: {
     params: {
-      postSlug: Joi.string().required()
+      pSlug: Joi.string().required()
     }
   },
 

@@ -1,10 +1,10 @@
 {
-  "name": "seedmongo-cms",
-  "version": "0.1.0",
-  "description": "A CMS based on Express with MongoDB",
+  "name": "newseed-api",
+  "version": "0.0.1",
+  "description": "Well, whatever you do, whether you eat or drink, do it all for God's glory.",
   "author": "Ezra Keddell",
   "main": "index.js",
-  "private": false,
+  "private": true,
   "engines": {
     "node": ">=8.11.0",
     "npm": ">=6.2.0",
@@ -41,6 +41,7 @@
     "jsonwebtoken": "^8.3.0",
     "method-override": "^3.0.0",
     "mongoose": "^5.2.5",
+    "mongoose-findorcreate": "^3.0.0",
     "morgan": "^1.9.0",
     "winston": "2.4.3"
   },

@@ -11,7 +11,7 @@ router.route('/')
   .get(postCtrl.getAll)
   .post(expressJwt({ secret: config.jwtSecret }), postCtrl.create);
 
-router.route('/:postSlug')
+router.route('/:pSlug')
   .get(postCtrl.get)
   .put(
     validate(paramValidation.updatePost),

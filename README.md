@@ -34,25 +34,25 @@ Heavily draws on [kunalkapadia/express-mongoose-es6-rest-api](https://github.com
 
 ### Post
 * id
-* postTitle
-* postSlug   
-* postType     
-* postDate
-* postContent  
-* postAuthor     
-* postImage      
-* postMedia
-* postStatus
-* postExpiry
-* postFrequency
-* postTerms
+* pTitle
+* pSlug   
+* pType     
+* pDate
+* pText  
+* pAuthor     
+* pImage      
+* pMedia
+* pStatus
+* pExpiry
+* pFreq
+* pTags
 * createdAt
 * updatedAt
 
 ### Terms
 * id
-* termType
-* termName
+* tType
+* tName
 
 ## Getting Started
 

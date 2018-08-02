@@ -1,38 +1,64 @@
 const changeCase = require('change-case');
 const Post = require('./post.model');
+const Tag = require('../tag/tag.model');
+
+
+/**
+ * Pass in tags array object to findorcreate
+ */
+async function setTags(tags) {
+  const tagPromises = [];
+  if (tags) {
+    tags.map((tag) => {
+      const sendTag = tag;
+      sendTag.tSlug = changeCase.paramCase(`${tag.tType}-${tag.tName}`);
+      const tProm = Tag.findOrCreate(sendTag).then(result => result.doc._id);
+      return tagPromises.push(tProm);
+    });
+  }
+
+  return Promise.all(tagPromises)
+    .then(resolved => resolved)
+    .catch(err => new Error(err));
+}
 
 /**
  * Create new post
  */
-function create(req, res, next) {
-  const newPost = new Post({
-    postTitle: req.body.postTitle,
-    postSlug: changeCase.paramCase(`${req.body.postTitle}-${Date.now()}`),
-    postType: req.body.postType,
-    postDate: req.body.postDate,
-    postTags: req.body.postTags,
-    postContent: req.body.postContent,
-    postAuthor: req.body.postAuthor,
-    postImage: req.body.postImage,
-    postMedia: req.body.postMedia,
-    postStatus: req.body.postStatus,
-    postExpiry: req.body.postExpiry,
-    postFrequency: req.body.postFrequency
-  });
+async function create(req, res, next) {
+  const tags = req.body.pTags;
+  const resolvedTags = await setTags(tags);
 
-  newPost.save((err, post) => {
-    if (err) {
-      return next(err);
-    }
-    return res.json({ post });
-  });
+  if (resolvedTags) {
+    const newPost = new Post({
+      pTitle: req.body.pTitle,
+      pSlug: changeCase.paramCase(`${req.body.pTitle}-${Date.now()}`),
+      pType: req.body.pType,
+      pDate: req.body.pDate,
+      pTags: resolvedTags,
+      pText: req.body.pText,
+      pAuthor: req.body.pAuthor,
+      pImage: req.body.pImage,
+      pMedia: req.body.pMedia,
+      pStatus: req.body.pStatus,
+      pExpiry: req.body.pExpiry,
+      pFreq: req.body.pFreq
+    });
+
+    newPost.save((err, post) => {
+      if (err) {
+        return next(err);
+      }
+      return res.json({ post });
+    });
+  }
 }
 
 /**
  * Get post
  */
 function get(req, res, next) {
-  Post.findOne({ postSlug: req.params.postSlug })
+  Post.findOne({ pSlug: req.params.pSlug })
     .exec((err, post) => {
       if (err) {
         return next(err);
@@ -49,7 +75,7 @@ function getAll(req, res, next) {
     .limit(50)
     .exec((err, posts) => {
       if (err) {
-        next(err);
+        return next(err);
       }
       return res.json({ posts });
     });
@@ -58,38 +84,34 @@ function getAll(req, res, next) {
 /**
  * Update existing post
  */
-function update(req, res, next) {
+async function update(req, res, next) {
   const post = req.body;
-  const { postSlug } = req.params;
+  const { pSlug } = req.params;
+  const { pTags } = post;
 
-  // create a slug from the title to regex
-  const slug = changeCase.paramCase(post.postTitle);
-  // create a regex from the slug
-  const slugString = new RegExp(slug, 'g');
-  // compare the passed in title-slug to the existing postSlug
-  if (!postSlug.match(slugString)) {
-    post.postSlug = `${slug}-${Date.now()}`;
+  if (pTags) {
+    post.pTags = await setTags(pTags);
   }
 
-  Post.updateOne({ postSlug }, post, ((err, resp) => {
+  // create a slug from the title to regex
+  const slug = changeCase.paramCase(post.pTitle);
+  // create a regex from the slug
+  const slugString = new RegExp(slug, 'g');
+  // compare the passed in title-slug to the existing pSlug
+  if (!pSlug.match(slugString)) {
+    post.pSlug = `${slug}-${Date.now()}`;
+  }
+
+  Post.findOneAndUpdate({ pSlug }, post, { new: true }, ((err, resp) => {
     if (err) {
-      next(err);
+      return next(err);
     }
-    if (resp.n === 0) {
+    if (!resp) {
       return res.status(200).send({ error: 'No post found.' });
     }
-    if (resp.nModified !== 0) {
-      return res.status(200).send({
-        success: 'Post successfully updated.',
-        postSlug: post.postSlug
-      });
-    }
-    if (resp.nModified === 0) {
-      return res.status(200).send({
-        success: 'Post found, but no new data was sent.'
-      });
-    }
-    return res.json(resp);
+    const show = resp;
+    show.pSlug = post.pSlug ? post.pSlug : show.pSlug;
+    return res.json({ post: show });
   }));
 }
 
@@ -97,11 +119,11 @@ function update(req, res, next) {
  * Delete post
  */
 function remove(req, res, next) {
-  const { postSlug } = req.params;
+  const { pSlug } = req.params;
 
-  Post.deleteOne({ postSlug }, ((err, resp) => {
+  Post.deleteOne({ pSlug }, ((err, resp) => {
     if (err) {
-      next(err);
+      return next(err);
     }
     if (resp.n === 0) {
       return res.status(200).send({ error: 'No post found.' });
