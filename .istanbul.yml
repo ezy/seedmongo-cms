@@ -5,7 +5,8 @@ instrumentation:
 reporting:
     print: summary
     reports:
-        - lcov
+        - json-summary
+        - html
     dir: ./coverage
     watermarks:
         statements: [50, 80]
