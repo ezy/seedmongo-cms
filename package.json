@@ -19,7 +19,8 @@
     "test": "cross-env NODE_ENV=test ./node_modules/.bin/mocha --ui bdd --reporter spec --colors server --recursive",
     "test:watch": "yarn test -- --watch",
     "test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _mocha -- --ui bdd --reporter spec --colors server --recursive",
-    "report-coverage": "./node_modules/.bin/codecov"
+    "report-coverage": "./node_modules/.bin/codecov",
+    "covdate": "mv coverage/coverage-summary.json coverage/coverage-summary-$(date +%Y%m%d%H%M).json"
   },
   "dependencies": {
     "bluebird": "^3.5.1",
